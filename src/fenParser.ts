@@ -59,9 +59,7 @@ export class FenParser {
       if (skip > 0) rankFen += skip.toString();
       fenPieces.push(rankFen);
     }
-    fen.push(fenPieces.join("/"));
-
-    fen.push(state.whiteToMove ? "w" : "b");
+    fen.push(fenPieces.join("/"), state.whiteToMove ? "w" : "b");
 
     if (state.castling.black === "-" && state.castling.white === "-") {
       fen.push("-");
@@ -73,9 +71,11 @@ export class FenParser {
       fen.push(castles);
     }
 
-    fen.push(state.enPassant);
-    fen.push(state.halfmoveClock.toString());
-    fen.push(state.fullmove.toString());
+    fen.push(
+      state.enPassant,
+      state.halfmoveClock.toString(),
+      state.fullmove.toString(),
+    );
 
     return fen.join(" ");
   }
