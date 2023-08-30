@@ -2,16 +2,23 @@ import { ChessGame, isPieceCode, PieceCode } from "./types.js";
 
 export class FenParser {
   parseFen(fen: string): ChessGame {
-    const segments = fen.split(" ");
+    const segments = fen.split(" ") as [
+      string,
+      string,
+      string,
+      string,
+      string,
+      string,
+    ];
     if (segments.length !== 6) throw new Error("Invalid FEN");
 
     return {
-      board: this.boardFromSegment(segments[0]!),
-      whiteToMove: segments[1]! === "w",
-      castling: this.castleFromSegment(segments[2]!),
-      enPassant: segments[3]!,
-      halfmoveClock: parseInt(segments[4]!),
-      fullmove: parseInt(segments[5]!),
+      board: this.boardFromSegment(segments[0]),
+      whiteToMove: segments[1] === "w",
+      castling: this.castleFromSegment(segments[2]),
+      enPassant: segments[3],
+      halfmoveClock: parseInt(segments[4]),
+      fullmove: parseInt(segments[5]),
     };
   }
 

@@ -37,3 +37,15 @@ export type ChessGame = {
   halfmoveClock: number;
   fullmove: number;
 };
+
+export type Coordinate = [number, number];
+
+export type Instruction = {
+  pieceToMove: PieceCode;
+  to: Coordinate;
+  from?: Coordinate;
+  capture?: boolean;
+  promotion?: boolean;
+  check?: boolean;
+  checkmate?: boolean;
+};
