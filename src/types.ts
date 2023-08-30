@@ -24,8 +24,14 @@ export type ChessGame = {
   board: PieceCode[][];
   whiteToMove: boolean;
   castling: {
-    white: "K" | "Q" | "KQ" | "-";
-    black: "k" | "q" | "kq" | "-";
+    white: {
+      king: boolean;
+      queen: boolean;
+    };
+    black: {
+      king: boolean;
+      queen: boolean;
+    };
   };
   enPassant: string;
   halfmoveClock: number;

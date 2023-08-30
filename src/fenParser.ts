@@ -5,35 +5,13 @@ export class FenParser {
     const segments = fen.split(" ");
     if (segments.length !== 6) throw new Error("Invalid FEN");
 
-    const fenPieces = segments[0]!; // assertion due to the error checking above
-
-    const board = this.createEmptyBoard();
-
-    const ranks = fenPieces.split("/");
-
-    for (let y = 0; y < ranks.length; y++) {
-      const rank = ranks[y];
-      let file = 0;
-
-      if (rank === undefined || board[y] === undefined) continue; // ts
-      for (const piece of rank) {
-        if (!isNaN(parseInt(piece))) {
-          file += parseInt(piece);
-        } else if (isPieceCode(piece)) {
-          board[y]![file] = piece; // TODO: remove assertion
-          file += 1;
-        }
-      }
-    }
-
     return {
-      board: board,
+      board: this.boardFromSegment(segments[0]!),
       whiteToMove: segments[1]! === "w",
+      castling: this.castleFromSegment(segments[2]!),
       enPassant: segments[3]!,
       halfmoveClock: parseInt(segments[4]!),
       fullmove: parseInt(segments[5]!),
-      // TODO: parse castling
-      castling: { white: "KQ", black: "kq" },
     };
   }
 
@@ -61,17 +39,16 @@ export class FenParser {
     }
     fen.push(fenPieces.join("/"), state.whiteToMove ? "w" : "b");
 
-    if (state.castling.black === "-" && state.castling.white === "-") {
-      fen.push("-");
-    } else {
-      let castles = "";
-      if (state.castling.white !== "-") castles += state.castling.white;
-      if (state.castling.black !== "-") castles += state.castling.black;
+    let castles = "";
+    if (state.castling.white.king) castles += "K";
+    if (state.castling.white.queen) castles += "Q";
+    if (state.castling.black.king) castles += "k";
+    if (state.castling.black.queen) castles += "q";
 
-      fen.push(castles);
-    }
+    if (castles === "") castles = "-";
 
     fen.push(
+      castles,
       state.enPassant,
       state.halfmoveClock.toString(),
       state.fullmove.toString(),
@@ -88,5 +65,45 @@ export class FenParser {
     }
 
     return board;
+  }
+
+  boardFromSegment(segment: string): PieceCode[][] {
+    const board = this.createEmptyBoard();
+
+    const ranks = segment.split("/");
+
+    for (let y = 0; y < ranks.length; y++) {
+      const rank = ranks[y];
+      let file = 0;
+
+      if (rank === undefined || board[y] === undefined) continue; // ts
+      for (const piece of rank) {
+        if (!isNaN(parseInt(piece))) {
+          file += parseInt(piece);
+        } else if (isPieceCode(piece)) {
+          board[y]![file] = piece; // TODO: remove assertion
+          file += 1;
+        }
+      }
+    }
+    return board;
+  }
+
+  castleFromSegment(segment: string): ChessGame["castling"] {
+    if (segment === "-")
+      return {
+        white: { king: false, queen: false },
+        black: { king: false, queen: false },
+      };
+    return {
+      white: {
+        king: segment.includes("K"),
+        queen: segment.includes("Q"),
+      },
+      black: {
+        king: segment.includes("k"),
+        queen: segment.includes("q"),
+      },
+    };
   }
 }
