@@ -1,4 +1,4 @@
-import { FenParser } from "./fenParser.js";
+import { FenParser } from "./fen-parser.js";
 import { ChessGame } from "./types.js";
 
 export const DEFAULT_FEN =

@@ -1,4 +1,4 @@
-import { FenParser } from "../src/fenParser.js";
+import { FenParser } from "../src/fen-parser.js";
 
 describe("FenParser", () => {
   it("should parse and re-serialize a FEN", () => {
