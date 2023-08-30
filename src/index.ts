@@ -9,16 +9,20 @@ export class Engine {
   public state: ChessGame;
 
   constructor(fenParser: FenParser, fen?: string) {
+    this.fenParser = fenParser;
+
     if (fen != undefined) {
       this.state = fenParser.parseFen(fen);
     } else {
       this.state = this.createGame();
     }
-
-    this.fenParser = fenParser;
   }
 
   createGame(): ChessGame {
     return this.fenParser.parseFen(DEFAULT_FEN);
   }
 }
+
+const game = new Engine(new FenParser());
+
+console.table(game.state.board);
