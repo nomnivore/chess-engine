@@ -27,7 +27,7 @@ export class FenParser {
 
     const fenPieces: string[] = [];
 
-    for (const rank of state.board) {
+    for (const rank of state.board.toReversed()) {
       let rankFen = "";
 
       let skip = 0;
@@ -79,8 +79,10 @@ export class FenParser {
 
     const ranks = segment.split("/");
 
-    for (let y = 0; y < ranks.length; y++) {
-      const rank = ranks[y];
+    let fenRank = 0;
+    for (let y = 7; y >= 0; y--) {
+      const rank = ranks[fenRank];
+      fenRank++;
       let file = 0;
 
       if (rank === undefined || board[y] === undefined) continue; // ts

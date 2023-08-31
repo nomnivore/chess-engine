@@ -15,16 +15,16 @@ describe("FenParser", () => {
     const parser = new FenParser();
     const state = parser.parseFen(DEFAULT_FEN);
 
-    expect(state.board[0]).toEqual(["r", "n", "b", "q", "k", "b", "n", "r"]);
-    expect(state.board[1]).toEqual(["p", "p", "p", "p", "p", "p", "p", "p"]);
+    expect(state.board[0]).toEqual(["R", "N", "B", "Q", "K", "B", "N", "R"]);
+    expect(state.board[1]).toEqual(["P", "P", "P", "P", "P", "P", "P", "P"]);
   });
 
   it("should parse black pieces into ranks 7 and 8 (idx 6 and 7)", () => {
     const parser = new FenParser();
     const state = parser.parseFen(DEFAULT_FEN);
 
-    expect(state.board[6]).toEqual(["P", "P", "P", "P", "P", "P", "P", "P"]);
-    expect(state.board[7]).toEqual(["R", "N", "B", "Q", "K", "B", "N", "R"]);
+    expect(state.board[6]).toEqual(["p", "p", "p", "p", "p", "p", "p", "p"]);
+    expect(state.board[7]).toEqual(["r", "n", "b", "q", "k", "b", "n", "r"]);
   });
 
   it("should parse empty squares as null", () => {
