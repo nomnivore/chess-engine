@@ -22,7 +22,3 @@ export class Engine {
     return this.fenParser.parseFen(DEFAULT_FEN);
   }
 }
-
-const game = new Engine(new FenParser());
-
-console.table(game.state.board);
