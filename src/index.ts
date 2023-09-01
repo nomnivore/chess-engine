@@ -1,14 +1,14 @@
 import { FenParser } from "./fen-parser.js";
-import { ChessGame } from "./types.js";
+import { GameState } from "./types.js";
 
 export const DEFAULT_FEN =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-export class Engine {
+export class ChessGame {
   public fenParser: FenParser;
-  public state: ChessGame;
+  public state: GameState;
 
-  constructor(fenParser: FenParser, fen?: string) {
+  constructor(fenParser: FenParser = new FenParser(), fen?: string) {
     this.fenParser = fenParser;
 
     if (fen != undefined) {
@@ -18,7 +18,7 @@ export class Engine {
     }
   }
 
-  createGame(): ChessGame {
+  createGame(): GameState {
     return this.fenParser.parseFen(DEFAULT_FEN);
   }
 }

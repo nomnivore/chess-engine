@@ -20,7 +20,7 @@ export function isPieceCode(value: unknown): value is PieceCode {
   return pieceCodes.includes(value as PieceCode);
 }
 
-export type ChessGame = {
+export type GameState = {
   board: PieceCode[][];
   whiteToMove: boolean;
   castling: {

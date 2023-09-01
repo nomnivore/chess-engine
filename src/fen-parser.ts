@@ -1,7 +1,7 @@
-import { ChessGame, isPieceCode, PieceCode } from "./types.js";
+import { GameState, isPieceCode, PieceCode } from "./types.js";
 
 export class FenParser {
-  parseFen(fen: string): ChessGame {
+  parseFen(fen: string): GameState {
     const segments = fen.split(" ") as [
       string,
       string,
@@ -22,7 +22,7 @@ export class FenParser {
     };
   }
 
-  toFen(state: ChessGame): string {
+  toFen(state: GameState): string {
     const fen: string[] = [];
 
     const fenPieces: string[] = [];
@@ -98,7 +98,7 @@ export class FenParser {
     return board;
   }
 
-  castleFromSegment(segment: string): ChessGame["castling"] {
+  castleFromSegment(segment: string): GameState["castling"] {
     if (segment === "-")
       return {
         white: { king: false, queen: false },

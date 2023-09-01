@@ -1,6 +1,6 @@
 import { FenParser } from "./fen-parser.js";
-import { Engine } from "./index.js";
-import { ChessGame } from "./types.js";
+import { ChessGame } from "./index.js";
+import { GameState } from "./types.js";
 
 // These icons are way too small on some fonts
 const icons = {
@@ -31,7 +31,7 @@ function color(text: string, foreground: number, background: number): string {
 export class ChessTui {
   private leftOffset = 1;
 
-  printBoard(state: ChessGame) {
+  printBoard(state: GameState) {
     console.log(`${state.whiteToMove ? "White" : "Black"} to move\n`);
 
     process.stdout.write(" ".repeat(this.leftOffset));
