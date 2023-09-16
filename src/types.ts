@@ -20,6 +20,10 @@ export function isPieceCode(value: unknown): value is PieceCode {
   return pieceCodes.includes(value as PieceCode);
 }
 
+export type Optional<T> = {
+  [Property in keyof T]?: T[Property];
+};
+
 export type GameState = {
   board: PieceCode[][];
   whiteToMove: boolean;
@@ -41,11 +45,11 @@ export type GameState = {
 export type Coordinate = [number, number];
 
 export type Instruction = {
-  pieceToMove: PieceCode;
+  pieceToMove?: PieceCode; // LAN removes the need for this   TODO: remove
   to: Coordinate;
   from?: Coordinate;
   capture?: boolean;
-  promotion?: boolean;
+  promotion?: PieceCode;
   check?: boolean;
   checkmate?: boolean;
 };

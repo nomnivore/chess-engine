@@ -52,3 +52,9 @@ export class ChessTui {
     process.stdout.write("a b c d e f g h\n");
   }
 }
+
+const game = new ChessGame();
+
+const tui = new ChessTui();
+
+tui.printBoard(game.state);
