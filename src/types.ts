@@ -20,6 +20,7 @@ export function isPieceCode(value: unknown): value is PieceCode {
   return pieceCodes.includes(value as PieceCode);
 }
 
+// used as a 'builder' type
 export type Optional<T> = {
   [Property in keyof T]?: T[Property];
 };
@@ -47,7 +48,7 @@ export type Coordinate = [number, number];
 export type Instruction = {
   pieceToMove?: PieceCode; // LAN removes the need for this   TODO: remove
   to: Coordinate;
-  from?: Coordinate;
+  from: Coordinate;
   capture?: boolean;
   promotion?: PieceCode;
   check?: boolean;
