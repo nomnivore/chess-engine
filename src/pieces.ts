@@ -1,4 +1,4 @@
-import { Coordinate, PieceCode } from "./types.js";
+import { Coordinate, GameState, PieceCode } from "./types.js";
 
 // OOP... bleh. but it does what I want it to, as long as its kept simple.
 abstract class Piece {
@@ -7,6 +7,44 @@ abstract class Piece {
   }
 
   abstract directions(): Coordinate[];
+
+  possibleMoves(state: GameState, pos: Coordinate): Coordinate[] {
+    const moves: Coordinate[] = [];
+
+    this.directions().forEach((dir) => {
+      let [x, y] = pos;
+      const [dx, dy] = dir;
+      let stop = false;
+      while (!stop) {
+        x += dx;
+        y += dy;
+
+        // first check if coord is out of bounds
+        if (x < 0 || x > 7 || y < 0 || y > 7) {
+          stop = true;
+          continue;
+        }
+
+        // next check if there is a piece at the coord
+        const pieceCode = state.board[x]![y];
+        const piece = pieces.get(pieceCode || null);
+
+        if (piece) {
+          if (piece.white !== this.white) {
+            moves.push([x, y]);
+          }
+          stop = true;
+          continue;
+        }
+
+        if (pieceCode === null) {
+          moves.push([x, y]);
+        }
+      }
+    });
+
+    return moves;
+  }
 }
 
 const rookDirs: Coordinate[] = [
@@ -45,6 +83,35 @@ class King extends Piece {
   directions(): Coordinate[] {
     return [...rookDirs, ...bishopDirs];
   }
+
+  possibleMoves(state: GameState, pos: Coordinate): Coordinate[] {
+    // copied from Knight, if there are issues, that is why!
+
+    // TODO: add castling
+
+    // TODO: add check detection, maybe this should be a filter in the legality checker?
+    const moves: Coordinate[] = [];
+    const [x, y] = pos;
+
+    this.directions().forEach((dir) => {
+      const [dx, dy] = dir;
+
+      const newX = x + dx;
+      const newY = y + dy;
+
+      // check out of bounds
+      if (newX < 0 || newX > 7 || newY < 0 || newY > 7) return;
+
+      const pieceCode = state.board[newX]![newY];
+
+      // check if friendly piece
+      if (pieceCode && pieces.get(pieceCode)?.white === this.white) return;
+
+      moves.push([newX, newY]);
+    });
+
+    return moves;
+  }
 }
 
 class Knight extends Piece {
@@ -60,13 +127,70 @@ class Knight extends Piece {
       [-1, -2],
     ];
   }
+
+  possibleMoves(state: GameState, pos: Coordinate): Coordinate[] {
+    const moves: Coordinate[] = [];
+    const [x, y] = pos;
+
+    this.directions().forEach((dir) => {
+      const [dx, dy] = dir;
+
+      const newX = x + dx;
+      const newY = y + dy;
+
+      // check out of bounds
+      if (newX < 0 || newX > 7 || newY < 0 || newY > 7) return;
+
+      const pieceCode = state.board[newX]![newY];
+
+      // check if friendly piece
+      if (pieceCode && pieces.get(pieceCode)?.white === this.white) return;
+
+      moves.push([newX, newY]);
+    });
+
+    return moves;
+  }
 }
 
 class Pawn extends Piece {
   directions(): Coordinate[] {
     // TODO: add an extra direction based on starting square / capture
     // in some move generation function
-    return [[1, 0]];
+    if (this.white) {
+      return [[1, 0]];
+    }
+
+    return [[-1, 0]];
+  }
+
+  possibleMoves(state: GameState, pos: Coordinate): Coordinate[] {
+    const moves: Coordinate[] = [];
+    const [x, y] = pos;
+    const cmod = this.white ? 1 : -1;
+
+    const extraDirs = this.directions();
+    if ((this.white && x === 1) || (!this.white && x === 6)) {
+      extraDirs.push([2 * cmod, 0]);
+    }
+
+    extraDirs.forEach((dir) => {
+      const [dx, dy] = dir;
+      const newX = x + dx;
+      const newY = y + dy;
+
+      // check out of bounds
+      if (newX < 0 || newX > 7 || newY < 0 || newY > 7) return;
+
+      const pieceCode = state.board[newX]![newY];
+      // if there is any piece, we can't move there
+      if (pieceCode) return;
+
+      moves.push([newX, newY]);
+    });
+
+    // TODO: add capture, en passant, and promotion
+    return moves;
   }
 }
 
