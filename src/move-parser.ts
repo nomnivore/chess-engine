@@ -1,6 +1,12 @@
 import { Coordinate, Instruction, Optional, isPieceCode } from "./types.js";
 
 export class MoveParser {
+  /**
+   * @param square - square notation e.g. "a1" or "h8"
+   * @returns [rank, file] as number[]
+
+    throws error if square is invalid
+   */
   squareToCoordinate(square: string): Coordinate {
     if (square.length !== 2) throw new Error("Invalid square");
     const file = square.charCodeAt(0) - 97;
@@ -10,6 +16,21 @@ export class MoveParser {
       throw new Error("Invalid square");
 
     return [rank, file];
+  }
+
+  /**
+   * @param coordinate - [rank, file] as number[]
+   * @returns e.g. [0, 0] -> "a1"
+
+    throws error if coordinate is invalid
+   */
+  coordinateToSquare(coordinate: Coordinate): string {
+    if (coordinate.length !== 2) throw new Error("Invalid coordinate");
+    const [rank, file] = coordinate;
+    if (file < 0 || file > 7 || rank < 0 || rank > 7)
+      throw new Error("Invalid coordinate");
+    const square = `${String.fromCharCode(file + 97)}${rank + 1}`;
+    return square;
   }
 
   parseLan(lan: string): Instruction {

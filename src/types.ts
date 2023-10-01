@@ -38,7 +38,7 @@ export type GameState = {
       queen: boolean;
     };
   };
-  enPassant: string;
+  enPassant?: Coordinate;
   halfmoveClock: number;
   fullmove: number;
 };

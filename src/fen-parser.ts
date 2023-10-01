@@ -1,7 +1,9 @@
-import { GameState, isPieceCode, PieceCode } from "./types.js";
+import { MoveParser } from "./move-parser.js";
+import { Coordinate, GameState, isPieceCode, PieceCode } from "./types.js";
 
 export class FenParser {
-  parseFen(fen: string): GameState {
+  // TODO: find a better way to pass dependencies
+  parseFen(fen: string, moveParser = new MoveParser()): GameState {
     const segments = fen.split(" ") as [
       string,
       string,
@@ -12,17 +14,25 @@ export class FenParser {
     ];
     if (segments.length !== 6) throw new Error("Invalid FEN");
 
+    let enPassant: Coordinate | undefined;
+
+    try {
+      enPassant = moveParser.squareToCoordinate(segments[3]);
+    } catch (e: unknown) {
+      enPassant = undefined;
+    }
+
     return {
       board: this.boardFromSegment(segments[0]),
       whiteToMove: segments[1] === "w",
       castling: this.castleFromSegment(segments[2]),
-      enPassant: segments[3],
+      enPassant: enPassant,
       halfmoveClock: parseInt(segments[4]),
       fullmove: parseInt(segments[5]),
     };
   }
 
-  toFen(state: GameState): string {
+  toFen(state: GameState, moveParser = new MoveParser()): string {
     const fen: string[] = [];
 
     const fenPieces: string[] = [];
@@ -54,9 +64,18 @@ export class FenParser {
 
     if (castles === "") castles = "-";
 
+    let enPassant = "-";
+    if (state.enPassant) {
+      try {
+        enPassant = moveParser.coordinateToSquare(state.enPassant);
+      } catch (e: unknown) {
+        console.log("Invalid en passant square");
+      }
+    }
+
     fen.push(
       castles,
-      state.enPassant,
+      enPassant,
       state.halfmoveClock.toString(),
       state.fullmove.toString(),
     );
