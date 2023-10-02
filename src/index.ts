@@ -16,7 +16,7 @@ export class ChessGame {
   public moveParser: MoveParser;
   public state: GameState;
 
-  constructor({ fenParser, fen, moveParser }: ChessGameOptions) {
+  constructor({ fenParser, fen, moveParser }: ChessGameOptions = {}) {
     this.fenParser = fenParser || new FenParser();
     this.moveParser = moveParser || new MoveParser();
 
