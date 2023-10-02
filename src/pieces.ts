@@ -189,7 +189,52 @@ class Pawn extends Piece {
       moves.push([newX, newY]);
     });
 
-    // TODO: add capture, en passant, and promotion
+    // captures
+    const captureDirs: Coordinate[] = [
+      [1 * cmod, 1],
+      [1 * cmod, -1],
+    ];
+
+    captureDirs.forEach((dir) => {
+      const [dx, dy] = dir;
+      const newX = x + dx;
+      const newY = y + dy;
+
+      // check out of bounds
+      if (newX < 0 || newX > 7 || newY < 0 || newY > 7) return;
+
+      const pieceCode = state.board[newX]![newY];
+
+      // if there's no piece, we can't move there
+      if (!pieceCode) return;
+
+      const piece = pieces.get(pieceCode);
+
+      if (piece && piece.white !== this.white) {
+        moves.push([newX, newY]);
+      }
+    });
+
+    // en passant
+    if (state.enPassant) {
+      // check if en passant is diagonal to the pawn
+      // en passant records the square behind the pawn that moved
+      const [ex, ey] = state.enPassant;
+
+      // untested
+      if (ey === y + 1 || ey === y - 1) {
+        // check if en passant is in the direction of the pawn
+        if ((this.white && ex === x + 1) || (!this.white && ex === x - 1)) {
+          // check if there is an enemy pawn there
+          const pieceCode = state.board[ex]![ey];
+          const piece = pieces.get(pieceCode || null);
+
+          if (piece && piece.white !== this.white && piece instanceof Pawn)
+            moves.push([ex, ey]);
+        }
+      }
+    }
+
     return moves;
   }
 }
