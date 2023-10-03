@@ -45,6 +45,16 @@ abstract class Piece {
 
     return moves;
   }
+
+  canCaptureKing(state: GameState, pos: Coordinate): boolean {
+    const { board } = state;
+    const moves = this.possibleMoves(state, pos);
+    const enemyKing = this.white ? "k" : "K";
+
+    for (const move of moves) {
+      if (board[move[0]]![move[1]] === enemyKing) return true;
+    }
+  }
 }
 
 const rookDirs: Coordinate[] = [
